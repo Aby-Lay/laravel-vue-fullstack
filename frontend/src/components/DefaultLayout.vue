@@ -31,7 +31,8 @@
                   <MenuButton class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                     <span class="absolute -inset-1.5" />
                     <span class="sr-only">Open user menu</span>
-                    <img class="size-8 rounded-full" :src="user.imageUrl" alt="" />
+                    <img class="size-8 rounded-full" src="https://randomuser.me/api/portraits/men/14.jpg" alt="" />
+                    <span class="text-white ml-3">{{user.name}}</span>
                   </MenuButton>
                 </div>
                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
@@ -66,7 +67,7 @@
         <div class="border-t border-gray-700 pt-4 pb-3">
           <div class="flex items-center px-5">
             <div class="shrink-0">
-              <img class="size-10 rounded-full" :src="user.imageUrl" alt="" />
+              <img class="size-10 rounded-full" src="https://randomuser.me/api/portraits/men/14.jpg" alt="" />
             </div>
             <div class="ml-3">
               <div class="text-base/5 font-medium text-white">{{ user.name }}</div>
@@ -87,19 +88,23 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import router from "../router.js";
+import axiosClient from "../axios.js";
+import useUserStore from "../store/user.js";
+import {computed} from "vue";
 
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
+const userStore = useUserStore()
+const user = computed(() => userStore.user)
+
 const navigation = [
   { name: 'Upload', to: {name: 'Home'} },
-  { name: 'MyImages', to: {name: 'MyImages'} },
+  { name: 'My Images', to: {name: 'MyImages'} },
  ]
 function logout() {
-
+  axiosClient.post('/logout')
+      .then((response)=>{
+        router.push({name: 'Login'})
+      })
 }
 </script>
 
